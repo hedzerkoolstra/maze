@@ -6,9 +6,9 @@ import Score from './components/Score.svelte'
 </script>
 
 <main>
-	<h1>The Maze</h1>
+	<h1>Maze</h1>
 
-	<p>
+	<!-- <p>
 		Rules of the game:
 	</p>
 	<ul>
@@ -16,7 +16,7 @@ import Score from './components/Score.svelte'
 		<li>Find your way to the endpoint somewhere in the maze.</li>
 		<li>Click on the tiles to see their color.</li>
 		<li>Black tiles are impassable.</li>
-	</ul>
+	</ul> -->
 	<GameBoard />
 	<Score />
 
