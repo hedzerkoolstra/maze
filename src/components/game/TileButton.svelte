@@ -1,22 +1,22 @@
 <script>
-import { onMount } from "svelte";
-
+  import { onMount } from "svelte";
 
   // import { data } from '../../store/scoreboard'
   export let tile;
-  let isTurned = false
-  let hasBeenWalked = false
+  export let disableButtons;
+  let isTurned = false;
+  let hasBeenWalked = false;
 
   onMount(() => {
-    if (tile.type == 'starttile') {
-      hasBeenWalked = true
+    if (tile.type == "starttile") {
+      hasBeenWalked = true;
     }
-  })
-  
+  });
+
   function registerClick(tile) {
-    isTurned = true; 
-    if (tile.type != 'empty') {
-      hasBeenWalked = true
+    isTurned = true;
+    if (tile.type != "empty") {
+      hasBeenWalked = true;
     }
   }
 </script>
@@ -35,40 +35,37 @@ import { onMount } from "svelte";
     transition: 0.2s;
   }
   .turned.endtile {
-    background-color: #AC92EC;
+    background-color: #ac92ec;
   }
   .starttile {
     background-color: #ecae92;
   }
   .turned.north {
-    background-color: #4FC1E9;
+    background-color: #4fc1e9;
   }
   .turned.east {
-    background-color: #ED5565;
+    background-color: #ed5565;
   }
   .turned.south {
-    background-color: #48CFAD;
+    background-color: #48cfad;
   }
   .turned.west {
-    background-color: #FFCE54;
+    background-color: #ffce54;
   }
   .turned.empty {
     background-color: rgb(26, 26, 26);
   }
   .circle {
     position: absolute;
-    top: calc((100% - 50%) /2);
-    left: calc((100% - 50%) /2);
+    top: calc((100% - 50%) / 2);
+    left: calc((100% - 50%) / 2);
     height: 50%;
     width: 50%;
     border-radius: 50%;
     background-color: black;
   }
-   
 </style>
 
-<button class="tile {tile.type} {tile.direction} {isTurned ? 'turned' : ''} " on:click="{registerClick(tile)}">
-  <div class="{hasBeenWalked ? 'circle' : ''}">
-
-  </div>
+<button on:click={registerClick(tile)} class="tile {tile.type} {tile.direction} {isTurned ? 'turned' : ''} " disabled={disableButtons}>
+  <div class={hasBeenWalked ? 'circle' : ''} />
 </button>

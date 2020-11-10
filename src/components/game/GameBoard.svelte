@@ -9,6 +9,9 @@
   let endTileY = 0;
   let lastModifiedTile = {};
   let adjacentTiles = [];
+  let timeleft = undefined
+  let totalTime = 30
+  let disableButtons = true
 
   class Tile {
     constructor(direction, type, turned, x, y) {
@@ -23,6 +26,21 @@
   onMount(() => {
     setupGame();
   });
+
+  
+  function startTimer() {
+    disableButtons = false;
+    timeleft = totalTime;
+    let timer = setInterval(function(){
+      timeleft--;
+      if (timeleft == 0) {
+        timeleft = 'Done'
+        disableButtons = true
+        clearInterval(timer)
+      }
+    },1000)
+  }
+  
 
   function setupGame() {
     createGrid();
@@ -55,15 +73,14 @@
     for (let i = 0; i < roadLength; i++) {
       let newTile = getAdjacentTile();
       if (newTile) {
-        console.log("Iteration: " + i + " New Tile - x:", newTile.x, "y:", newTile.y);
+        // console.log("Iteration: " + i + " New Tile - x:", newTile.x, "y:", newTile.y);
         if (i < roadLength - 1) {
           grid[newTile.x][newTile.y].type = "passable";
           grid[newTile.x][newTile.y].direction = newTile.directionToLastPoint;
           setLastModifiedTile(newTile);
         } else {
           grid[newTile.x][newTile.y].type = "starttile";
-        }
-        
+        }    
       } else {
         grid.splice(0, grid.length);
         setupGame();
@@ -155,14 +172,26 @@
     flex: 1;
     margin-right: 4px;
   }
+  .starter {
+    margin-top: 2rem;
+  }
 </style>
 
-<div class="gameboard">
-  {#each grid as col}
-    <div class="col">
-      {#each col as tile}
-        <TileButton {tile} />
-      {/each}
-    </div>
-  {/each}
+<div>
+  <div class="gameboard">
+    {#each grid as col}
+      <div class="col">
+        {#each col as tile}
+          <TileButton {tile} {disableButtons} />
+        {/each}
+      </div>
+    {/each}
+    
+  </div>
+  <div class="starter">
+    <button on:click={startTimer} >Start</button>
+    {#if timeleft}
+    <span>Time left: {timeleft}</span>
+    {/if}
+  </div>
 </div>
