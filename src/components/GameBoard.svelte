@@ -1,59 +1,60 @@
 <script>
-  import { onMount } from "svelte";
+  // Components
   import TileButton from "./TileButton.svelte";
 
-  let gridSize = 16;
-  let roadLength = 30;
+  // Store
+  import { gridSize, mazeLength, gameIsFresh, triggerReplay } from '../store'
+
+  // Variables
   let grid = [];
-  let endTileX = 0;
-  let endTileY = 0;
+  let endTile = {x: 0, y: 0};
   let lastModifiedTile = {};
   let adjacentTiles = [];
-  let timeleft = undefined
-  let totalTime = 30
-  let disableButtons = true
 
   class Tile {
-    constructor(direction, type, turned, x, y) {
+    constructor(direction, type, x, y) {
       this.direction = direction;
       this.type = type;
-      this.turned = turned;
       this.x = x;
       this.y = y;
     }
   }
 
+  // On mount
+  import { onMount } from "svelte";
   onMount(() => {
-    setupGame();
+    createGrid();
+    createMaze(); 
   });
 
-  
-  function startTimer() {
-    disableButtons = false;
-    timeleft = totalTime;
-    let timer = setInterval(function(){
-      timeleft--;
-      if (timeleft == 0) {
-        timeleft = 'Done'
-        disableButtons = true
-        clearInterval(timer)
-      }
-    },1000)
-  }
-  
+  // Watcher triggered when 'Play again' is pressed
+  triggerReplay.subscribe(doReplay => {
+    if(doReplay) {
+      console.log('Refresh triggered');
+      resetGrid()
+      createMaze();
+      gameIsFresh.set(true)     
+    }
+    triggerReplay.set(false)
+  })
 
-  function setupGame() {
-    createGrid();
-    setEndTile();
-    createMaze();
+  function resetGrid() {
+    // grid.forEach(col => {
+    //   col.forEach(tile => {
+    //     tile.type = 'empty'
+    //     tile.direction = 'none'
+    //   })
+    // })
+    grid.length = 0
+    createGrid()
   }
 
+  // Functions for setting up the game
   function createGrid() {
-    console.log(grid, length);
-    for (let i = 0; i < gridSize; i++) {
+    for (let i = 0; i < $gridSize; i++) {
       let col = [];
-      for (let j = 0; j < gridSize; j++) {
-        let tile = new Tile("none", "empty", false, i, j);
+      for (let j = 0; j < $gridSize; j++) {
+        let tile = new Tile("none", "empty", i, j);
         col.push(tile);
       }
       grid.push(col);
@@ -62,40 +63,33 @@
   }
 
   function setEndTile() {
-    endTileX = Math.round(Math.random() * (gridSize - 1));
-    endTileY = Math.round(Math.random() * (gridSize - 1));
-    grid[endTileX][endTileY].type = "endtile";
-    grid[endTileX][endTileY].turned = true;
-    setLastModifiedTile(grid[endTileX][endTileY]);
+    endTile.x = Math.round(Math.random() * ($gridSize - 1));
+    endTile.y = Math.round(Math.random() * ($gridSize - 1));
+    grid[endTile.x][endTile.y].type = "endtile";
+    lastModifiedTile = grid[endTile.x][endTile.y]    
   }
 
   function createMaze() {
-    for (let i = 0; i < roadLength; i++) {
-      let newTile = getAdjacentTile();
+    setEndTile();
+    for (let i = 0; i < $mazeLength; i++) {
+      adjacentTiles = setAdjacentTiles(lastModifiedTile);
+      let newTile = pickTile();
       if (newTile) {
-        // console.log("Iteration: " + i + " New Tile - x:", newTile.x, "y:", newTile.y);
-        if (i < roadLength - 1) {
+        if (i < $mazeLength - 1) {
           grid[newTile.x][newTile.y].type = "passable";
           grid[newTile.x][newTile.y].direction = newTile.directionToLastPoint;
-          setLastModifiedTile(newTile);
+          lastModifiedTile = newTile
         } else {
           grid[newTile.x][newTile.y].type = "starttile";
+          grid[newTile.x][newTile.y].direction = newTile.directionToLastPoint;
         }    
       } else {
-        grid.splice(0, grid.length);
-        setupGame();
+        resetGrid()
+        createMaze();
         break;
       }
     }
-  }
-
-  function setLastModifiedTile(tile) {
-    lastModifiedTile = tile
-  }
-
-  function getAdjacentTile() {
-    adjacentTiles = setAdjacentTiles(lastModifiedTile);
-    return pickTile();
+    grid = grid
   }
 
   function setAdjacentTiles(originalTile) {
@@ -126,7 +120,7 @@
 
   function isValidTile(tile) {
     //Check if tile is within grid and is already in use
-    if (tile.x >= 0 && tile.x < gridSize && tile.y >= 0 && tile.y < gridSize) {
+    if (tile.x >= 0 && tile.x < $gridSize && tile.y >= 0 && tile.y < $gridSize) {
       if (grid[tile.x][tile.y].type != "empty") {
         return false;
       }
@@ -142,7 +136,7 @@
       let secAdjTileY = secondaryAdjacentTiles[i].y;
 
       // Check if adjacent tile is withing the grid
-      if (secAdjTileX >= 0 && secAdjTileX < gridSize && secAdjTileY >= 0 && secAdjTileY < gridSize) {
+      if (secAdjTileX >= 0 && secAdjTileX < $gridSize && secAdjTileY >= 0 && secAdjTileY < $gridSize) {
         let secondaryAdjacentTile = grid[secAdjTileX][secAdjTileY];
 
         // Check if adjacent tile is available
@@ -172,26 +166,17 @@
     flex: 1;
     margin-right: 4px;
   }
-  .starter {
-    margin-top: 2rem;
-  }
 </style>
 
 <div>
   <div class="gameboard">
+    
     {#each grid as col}
       <div class="col">
         {#each col as tile}
-          <TileButton {tile} {disableButtons} />
+          <TileButton bind:tile={tile} />
         {/each}
       </div>
     {/each}
-    
-  </div>
-  <div class="starter">
-    <button on:click={startTimer} >Start</button>
-    {#if timeleft}
-    <span>Time left: {timeleft}</span>
-    {/if}
   </div>
 </div>

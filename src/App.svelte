@@ -1,14 +1,43 @@
 <script>
-import GameBoard from './components/game/GameBoard.svelte'
-import Score from './components/Score.svelte'
+
+  // import { Router, Route, Link } from "svelte-routing";
+  // import Home from "./pages/Home.svelte";
+  // import About from "./pages/About.svelte";
+  // export let url = "";
+  // Store
+  import { gameNumber, totalTrials } from "./store";
+
+  // Components
+  import GameBoard from "./components/GameBoard.svelte";
+  import Score from "./components/ScoreScript.svelte";
+  import Timer from "./components/Timer.svelte";
+  import AfterGame from "./components/AfterGame.svelte";
+  // import GameSettings from "./components/GameSettings.svelte";
 
 
 </script>
 
-<main>
-	<h1>Maze</h1>
+<style>
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 100%;
+  }
 
-	<!-- <p>
+  h1 {
+    text-transform: uppercase;
+    font-size: 3em;
+    font-weight: 100;
+    margin: 1rem;
+  }
+</style>
+
+<main>
+  <h1>Maze</h1>
+
+  <!-- <p>
 		Rules of the game:
 	</p>
 	<ul>
@@ -16,42 +45,14 @@ import Score from './components/Score.svelte'
 		<li>Find your way to the endpoint somewhere in the maze.</li>
 		<li>Click on the tiles to see their color.</li>
 		<li>Black tiles are impassable.</li>
-	</ul> -->
-	<GameBoard />
-	<Score />
+  </ul> -->
 
+  {#if $totalTrials > $gameNumber}
+    <GameBoard />
+    <Score />
+    <Timer />
+    <!-- <GameSettings /> -->
+  {:else}
+    <AfterGame />
+  {/if}
 </main>
-
-
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-		margin: 1rem;
-	}
-ul {
-	padding: 0;
-}
-	p, li {
-		text-transform: uppercase;
-		font-weight: 100;
-		list-style: none;
-		text-align: left;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			/* max-width: none; */
-		}
-	}
-</style>
