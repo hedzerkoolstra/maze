@@ -1,51 +1,76 @@
-html, body {
-	position: relative;
-	width: 100%;
-	height: 100%;
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 body {
-	color: #ff3e00;;
-	margin: 0;
-	padding: 0px;
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  color: #222022;
+  margin: 0;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+main {
+  text-align: center;
+  padding: 1em;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 100%;
 }
 
+h1 {
+  text-transform: uppercase;
+  font-size: 3em;
+  font-weight: 100;
+  margin: 1rem;
+  color: #fe5f55
+}
 
 label {
-	display: block;
+  display: block;
 }
 
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+input {
+  display: block;
+  border: none;
+  border-bottom: 1px solid #fe5f55;
+  padding: 0;
+  margin: 1rem auto;
+}
+input:focus {
+  outline: none;
 }
 
-input:disabled {
-	color: #ccc;
+.btn {
+  background-color: #fe5f55;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem 0.5rem;
+  margin: 0 auto;
+  border-radius: 15px;
+  outline: none;
+  display: flex;
+  height: 45px;
+  width: 45px;
+  justify-content: center;
+  align-items: center;
+}
+.btn--text {
+  background: white;
+  font-size: 14px;
+  text-transform: capitalize;
+  color: black;
+  width: auto;
+  margin: 0;
+}
+.btn--text.active{
+  text-decoration: underline;
+}
+.btn img {
+  max-width: 32px;
 }
 
-button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
-}
-
-button:disabled {
-	color: #999;
-}
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
-}

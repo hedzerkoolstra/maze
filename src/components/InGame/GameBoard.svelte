@@ -3,11 +3,11 @@
   import TileButton from "./TileButton.svelte";
 
   // Store
-  import { gridSize, mazeLength, gameIsFresh, triggerReplay } from '../store'
+  import { gridSize, mazeLength, gameIsUntouched, triggerReplay, clickedEmpty, clickedPassable, clickedEndtile } from "../../store";
 
   // Variables
   let grid = [];
-  let endTile = {x: 0, y: 0};
+  let endTile = { x: 0, y: 0 };
   let lastModifiedTile = {};
   let adjacentTiles = [];
 
@@ -24,29 +24,36 @@
   import { onMount } from "svelte";
   onMount(() => {
     createGrid();
-    createMaze(); 
+    createMaze();
   });
 
   // Watcher triggered when 'Play again' is pressed
-  triggerReplay.subscribe(doReplay => {
-    if(doReplay) {
-      console.log('Refresh triggered');
-      resetGrid()
+  triggerReplay.subscribe((doReplay) => {
+    if (doReplay) {
+      console.log("Refresh triggered");
+      resetGrid();
+      resetScore();
       createMaze();
-      gameIsFresh.set(true)     
+      gameIsUntouched.set(true);
     }
-    triggerReplay.set(false)
-  })
+    triggerReplay.set(false);
+  });
+
+  function resetScore() {
+    clickedEmpty.set(0);
+    clickedPassable.set(0);
+    clickedEndtile.set(0);
+  }
 
   function resetGrid() {
-    // grid.forEach(col => {
-    //   col.forEach(tile => {
-    //     tile.type = 'empty'
-    //     tile.direction = 'none'
-    //   })
-    // })
-    grid.length = 0
-    createGrid()
+    grid.forEach((col) => {
+      col.forEach((tile) => {
+        tile.type = "empty";
+        tile.direction = "none";
+      });
+    });
+    // grid.length = 0
+    // createGrid()
   }
 
   // Functions for setting up the game
@@ -66,7 +73,7 @@
     endTile.x = Math.round(Math.random() * ($gridSize - 1));
     endTile.y = Math.round(Math.random() * ($gridSize - 1));
     grid[endTile.x][endTile.y].type = "endtile";
-    lastModifiedTile = grid[endTile.x][endTile.y]    
+    lastModifiedTile = grid[endTile.x][endTile.y];
   }
 
   function createMaze() {
@@ -78,18 +85,18 @@
         if (i < $mazeLength - 1) {
           grid[newTile.x][newTile.y].type = "passable";
           grid[newTile.x][newTile.y].direction = newTile.directionToLastPoint;
-          lastModifiedTile = newTile
+          lastModifiedTile = newTile;
         } else {
           grid[newTile.x][newTile.y].type = "starttile";
           grid[newTile.x][newTile.y].direction = newTile.directionToLastPoint;
-        }    
+        }
       } else {
-        resetGrid()
+        resetGrid();
         createMaze();
         break;
       }
     }
-    grid = grid
+    grid = grid;
   }
 
   function setAdjacentTiles(originalTile) {
@@ -103,10 +110,8 @@
   function pickTile() {
     let n = Math.floor(Math.random() * adjacentTiles.length);
     let newTile = adjacentTiles[n];
-    // Check if tile is valid
     if (adjacentTiles.length > 0) {
       if (isValidTile(newTile)) {
-        // Return valid tile
         return newTile;
       } else {
         // Remove invalid tile and pick a new tile
@@ -132,12 +137,14 @@
     let validTiles = 0;
     let secondaryAdjacentTiles = setAdjacentTiles(tile);
     for (let i = 0; i < secondaryAdjacentTiles.length; i++) {
-      let secAdjTileX = secondaryAdjacentTiles[i].x;
-      let secAdjTileY = secondaryAdjacentTiles[i].y;
-
       // Check if adjacent tile is withing the grid
-      if (secAdjTileX >= 0 && secAdjTileX < $gridSize && secAdjTileY >= 0 && secAdjTileY < $gridSize) {
-        let secondaryAdjacentTile = grid[secAdjTileX][secAdjTileY];
+      if (
+        secondaryAdjacentTiles[i].x >= 0 &&
+        secondaryAdjacentTiles[i].x < $gridSize &&
+        secondaryAdjacentTiles[i].y >= 0 &&
+        secondaryAdjacentTiles[i].y < $gridSize
+      ) {
+        let secondaryAdjacentTile = grid[secondaryAdjacentTiles[i].x][secondaryAdjacentTiles[i].y];
 
         // Check if adjacent tile is available
         if (secondaryAdjacentTile.type == "empty") {
@@ -145,7 +152,7 @@
         }
       }
     }
-    // If there are at least three valid adjacent tiles, the tile can be used.
+    // If there are three valid adjacent tiles, the tile can be used.
     if (validTiles >= 3) {
       return true;
     } else {
@@ -170,11 +177,10 @@
 
 <div>
   <div class="gameboard">
-    
     {#each grid as col}
       <div class="col">
         {#each col as tile}
-          <TileButton bind:tile={tile} />
+          <TileButton bind:tile />
         {/each}
       </div>
     {/each}

@@ -1,7 +1,7 @@
 <script>
-  import { gameIsPlaying, gameNumber, clickedEmpty, clickedEndtile, clickedPassable } from "../store";
+  import { playerInfo, gameIsPlaying, gameNumber, clickedEmpty, clickedEndtile, clickedPassable } from "../../store";
 
-  import { db } from '../firestore.js'
+  import { db } from '../../firestore.js'
 
   let gameData = undefined
   let dataObject = {}
@@ -23,7 +23,6 @@
       if (!gameData) {
         createDataset()
       }
-      console.log('score triggered', $gameNumber, isPlaying);
       let wroCli = $clickedEmpty
       let rigCli = $clickedPassable
       let cliEnd = $clickedEndtile == 0 ? false : true
@@ -37,6 +36,13 @@
       gameData.set(dataObject, { merge: true })
     }
   });
+
+playerInfo.subscribe((info) => {
+  if (Object.keys(info).length !== 0) {
+    gameData.set(info, { merge: true })
+  }
+  
+})
 
 function createDataset() {
    gameData = db.collection('Games').doc()

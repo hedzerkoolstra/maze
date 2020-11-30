@@ -1,9 +1,9 @@
 <script>
   // Store
-  import { totalTime, gridSize, mazeLength, totalTrials } from "../store";
+  import { totalTime, gridSize, mazeLength, totalTrials } from "../../store";
 
   // Database
-  import { db } from '../firestore.js'
+  import { db } from '../../firestore.js'
 
   // Variables
   let word = 'this'

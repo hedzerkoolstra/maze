@@ -1,41 +1,33 @@
 <script>
   // Store
-  import { gameIsFresh, clickedEmpty, clickedPassable, clickedEndtile, gameIsPlaying } from '../store'
-  
+  import { gameIsUntouched, clickedEmpty, clickedPassable, clickedEndtile, gameIsPlaying } from "../../store";
+
   // Variables
   export let tile;
   let isClicked = false;
-  let isTurned = false;
 
   // Functions
   function registerClick(tile) {
-    // Disable tile
-    isClicked = true   
-    // Show color
-    isTurned = true;
-    tile = tile
-    // Pass clicks to store
+    isClicked = true;
+    tile = tile;
     if (tile.type == "empty") {
-      clickedEmpty.update(n => n + 1)
+      clickedEmpty.update((n) => n + 1);
     } else if (tile.type == "passable") {
-      clickedPassable.update(n => n + 1)
+      clickedPassable.update((n) => n + 1);
     } else {
-      clickedEndtile.update(n => n + 1)
+      clickedEndtile.update((n) => n + 1);
     }
   }
 
   // Watcher that resets the tile variables
-  gameIsFresh.subscribe(isFresh => {
-    if (isFresh) {
-      isClicked = false
-      isTurned = false
-    }
-    
-    if(isFresh && tile.type == 'starttile') {
-      isTurned = true
-    }
-  })
-
+  gameIsUntouched.subscribe((IsUntouched) => {
+    if (IsUntouched) {
+      isClicked = false;
+      if (tile.type == "starttile") {
+        isClicked = true;
+      }
+    }   
+  });
 </script>
 
 <style>
@@ -68,6 +60,9 @@
   .turned.empty {
     background-color: rgb(26, 26, 26);
   }
+  .turned.endtile {
+    background-color: rgb(26, 26, 26);
+  }
   .circle {
     position: absolute;
     top: calc((100% - 40%) / 2);
@@ -75,11 +70,12 @@
     height: 40%;
     width: 40%;
     border-radius: 50%;
-    background-color:rgb(26, 26, 26);
+    background-color: rgb(26, 26, 26);
   }
 </style>
 
-<button on:click={registerClick(tile)} class="tile {tile.type} {tile.direction} {isTurned ? 'turned' : ''}" disabled={isClicked || !$gameIsPlaying} >
-  <div class={isTurned ? 'circle' : ''}> 
-  </div>
+<button on:click={registerClick(tile)} 
+        class="tile {tile.type} {tile.direction} {isClicked ? 'turned' : ''}" 
+        disabled={isClicked || !$gameIsPlaying}>
+  <div class={isClicked ? 'circle' : ''} />
 </button>
