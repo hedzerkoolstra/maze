@@ -11,6 +11,8 @@
   let lastModifiedTile = {};
   let adjacentTiles = [];
 
+  let tileClass = {x: 0, y: 0}
+   
   class Tile {
     constructor(direction, type, x, y) {
       this.direction = direction;
@@ -18,6 +20,10 @@
       this.x = x;
       this.y = y;
     }
+  }
+
+  function createTile(direction, type, x, y) {
+    return {direction: direction, type: type, x: x, y: y}
   }
 
   // On mount
@@ -61,7 +67,8 @@
     for (let i = 0; i < $gridSize; i++) {
       let col = [];
       for (let j = 0; j < $gridSize; j++) {
-        let tile = new Tile("none", "empty", i, j);
+        // let tile = new Tile("none", "empty", i, j);
+        let tile = createTile("none", "empty", i, j)
         col.push(tile);
       }
       grid.push(col);

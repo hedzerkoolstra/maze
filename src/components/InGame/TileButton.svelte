@@ -74,8 +74,6 @@
   }
 </style>
 
-<!-- trigger -->
-
 <button on:click={registerClick(tile)} 
         class="tile {tile.type} {tile.direction} {isClicked ? 'turned' : ''}" 
         disabled={isClicked || !$gameIsPlaying}>

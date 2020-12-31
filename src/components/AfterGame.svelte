@@ -30,9 +30,10 @@
 </script>
 
 <div class="after-game">
-  <LangSelector />
+  
 
   {#if !infoSubmitted}
+    <LangSelector />
     <p>{allTexts[$activeLocale].alinea1}</p>
     <p>{allTexts[$activeLocale].alinea2}</p>
 

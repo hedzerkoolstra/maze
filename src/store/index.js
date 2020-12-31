@@ -12,7 +12,7 @@ export const activeLocale = writable('english')
 export const totalTime = writable(30);
 export const gridSize = writable(18);
 export const mazeLength = writable(50);
-export const totalTrials = writable(2);
+export const totalTrials = writable(12);
 
 //Score
 export const clickedEndtile = writable(0);
