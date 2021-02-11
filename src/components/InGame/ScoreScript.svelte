@@ -1,5 +1,5 @@
 <script>
-  import { playerInfo, gameIsPlaying, gameNumber, clickedEmpty, clickedEndtile, clickedPassable } from "../../store";
+  import { playerInfo, gameIsPlaying, gameNumber, clickedBlack, clickedColored } from "../../store";
 
   import { db } from '../../firestore.js'
 
@@ -7,11 +7,10 @@
   let dataObject = {}
 
   class Score {
-    constructor(game, wrongClicks, rightClicks, clickedEndtile, totalClicks, percentageRight, percentageWrong) {
+    constructor(game, wrongClicks, rightClicks, totalClicks, percentageRight, percentageWrong) {
       this.game = game;
       this.wrongClicks = wrongClicks;
       this.rightClicks = rightClicks;
-      this.clickedEndtile = clickedEndtile;
       this.totalClicks = totalClicks;
       this.percentageRight = percentageRight;
       this.percentageWrong = percentageWrong;
@@ -23,13 +22,12 @@
       if (!gameData) {
         createDataset()
       }
-      let wroCli = $clickedEmpty
-      let rigCli = $clickedPassable
-      let cliEnd = $clickedEndtile == 0 ? false : true
+      let wroCli = $clickedBlack
+      let rigCli = $clickedColored
       let totCli = rigCli + wroCli
       let perRig = rigCli * 100 / totCli 
       let perWro = wroCli * 100 / totCli 
-      let newGame = new Score($gameNumber, wroCli, rigCli, cliEnd, totCli, perRig, perWro);
+      let newGame = new Score($gameNumber, wroCli, rigCli, totCli, perRig, perWro);
       let gameCopy = Object.assign({}, newGame)
       dataObject['Game ' + $gameNumber] = gameCopy
       console.log(dataObject['Game ' + $gameNumber]);

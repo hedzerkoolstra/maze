@@ -1,9 +1,10 @@
 <script>
   // Components
   import TileButton from "./TileButton.svelte";
+  import PlayButtons from "./PlayButtons.svelte";
 
   // Store
-  import { gridSize, mazeLength, gameIsUntouched, triggerReplay, clickedEmpty, clickedPassable, clickedEndtile } from "../../store";
+  import { gridSize, mazeLength, gameIsUntouched, gameIsPlaying, triggerReplay, clickedBlack, clickedColored } from "../../store";
 
   // Variables
   let grid = [];
@@ -46,9 +47,8 @@
   });
 
   function resetScore() {
-    clickedEmpty.set(0);
-    clickedPassable.set(0);
-    clickedEndtile.set(0);
+    clickedBlack.set(0);
+    clickedColored.set(0);
   }
 
   function resetGrid() {
@@ -171,6 +171,7 @@
 <style>
   .gameboard {
     display: flex;
+    position: relative;
     padding: 1rem;
     background-color: grey;
     width: 100%;
@@ -191,5 +192,6 @@
         {/each}
       </div>
     {/each}
+    <PlayButtons />
   </div>
 </div>

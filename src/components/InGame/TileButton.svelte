@@ -1,6 +1,6 @@
 <script>
   // Store
-  import { gameIsUntouched, clickedEmpty, clickedPassable, clickedEndtile, gameIsPlaying } from "../../store";
+  import { gameIsUntouched, clickedBlack, clickedColored, gameIsPlaying } from "../../store";
 
   // Variables
   export let tile;
@@ -11,11 +11,9 @@
     isClicked = true;
     tile = tile;
     if (tile.type == "empty") {
-      clickedEmpty.update((n) => n + 1);
+      clickedBlack.update((n) => n + 1);
     } else if (tile.type == "passable") {
-      clickedPassable.update((n) => n + 1);
-    } else {
-      clickedEndtile.update((n) => n + 1);
+      clickedColored.update((n) => n + 1);
     }
   }
 
@@ -41,9 +39,11 @@
     padding-bottom: 100%;
     margin-bottom: 4px;
     box-sizing: border-box;
+    outline: none;
+    transition: 0.05s;
   }
-  .turned.endtile {
-    background-color: #ac92ec;
+  .tile:hover {
+      filter: brightness(120%);
   }
   .turned.north {
     background-color: #4fc1e9;
